@@ -2,8 +2,6 @@
 #ifndef _RTE_ATOMIC_H_
 #define _RTE_ATOMIC_H_
 
-#include "base.h"
-
 #include <stdint.h>
 
 #ifdef __cplusplus
