@@ -17,9 +17,9 @@ void *doit(void *);
 int main()
 {
     pthread_t tidA, tidB, tidC, tidD, tidE, tidF;
-	
-	printf("main pid:%x - %ld\n", (unsigned int)pthread_self(), (unsigned int)pthread_self());
-	
+    
+    printf("main pid:%x - %ld\n", (unsigned int)pthread_self(), (unsigned int)pthread_self());
+    
     pthread_create(&tidA, NULL, doit, NULL);
     pthread_create(&tidB, NULL, doit, NULL);
     pthread_create(&tidC, NULL, doit, NULL);
@@ -35,8 +35,8 @@ int main()
     pthread_join(tidE, NULL);
     pthread_join(tidF, NULL);
     
-	printf("counter: %d\n", counter);
-	
+    printf("counter: %d\n", counter);
+    
     return 0;
 }
 
@@ -44,16 +44,15 @@ int main()
 void *doit(void *arg)
 {    
     uint64_t i, val;
-	uint64_t tmp = 0;
-	uint64_t tid = pthread_self();
-	
-	printf("tid:%x - %ld\n", (unsigned int)tid, (unsigned int)tid);
-	
+    uint64_t tid = pthread_self();
+    
+    printf("tid:%x - %ld\n", (unsigned int)tid, (unsigned int)tid);
+    
     for (i=0; i<NLOOP; i++) {
         pthread_mutex_lock(&counter_mutex);
-		
-		counter += 1;
-		
+        
+        counter += 1;
+        
         pthread_mutex_unlock(&counter_mutex);
     }
     return NULL;
