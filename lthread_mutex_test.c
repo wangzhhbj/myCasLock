@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include <stdio.h>
 
-#define NLOOP 5000000
+#define NLOOP 50000000
 
 #include "lthread_mutex.h"
 
@@ -10,7 +10,7 @@ struct lthread_mutex mutex_lock_st;
 
 
 static pthread_mutex_t counter_mutex = PTHREAD_MUTEX_INITIALIZER;
-static int counter = 0;
+static uint64_t counter = 0;
 
 void *doit(void *);
 
@@ -36,7 +36,7 @@ int main()
     pthread_join(tidE, NULL);
     pthread_join(tidF, NULL);
     
-	printf("counter: %d\n", counter);
+	printf("counter: %ld\n", counter);
 	
     lthread_mutex_destroy(&mutex_lock_st);
 	
@@ -46,7 +46,7 @@ int main()
 
 void *doit(void *arg)
 {    
-    int i, val;
+    uint64_t i, val;
 	uint64_t tmp = 0;
 	uint64_t tid = pthread_self();
 	
