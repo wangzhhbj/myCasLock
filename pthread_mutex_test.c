@@ -5,11 +5,11 @@
 #include <stdint.h>
 #include <linux/types.h>
 
-#define NLOOP 5000000
+#define NLOOP 50000000
 
 
 static pthread_mutex_t counter_mutex = PTHREAD_MUTEX_INITIALIZER;
-static int counter = 0;
+static uint64_t counter = 0;
 
 void *doit(void *);
 
@@ -43,7 +43,7 @@ int main()
 
 void *doit(void *arg)
 {    
-    int i, val;
+    uint64_t i, val;
 	uint64_t tmp = 0;
 	uint64_t tid = pthread_self();
 	
