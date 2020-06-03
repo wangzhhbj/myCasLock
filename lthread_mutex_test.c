@@ -18,9 +18,9 @@ void *doit(void *);
 int main()
 {
     pthread_t tidA, tidB, tidC, tidD, tidE, tidF;
-	
-	lthread_mutex_init("lthread_mutex_locktest", &mutex_lock_st);
-	
+    
+    lthread_mutex_init("lthread_mutex_locktest", &mutex_lock_st);
+    
     pthread_create(&tidA, NULL, doit, NULL);
     pthread_create(&tidB, NULL, doit, NULL);
     pthread_create(&tidC, NULL, doit, NULL);
@@ -36,10 +36,10 @@ int main()
     pthread_join(tidE, NULL);
     pthread_join(tidF, NULL);
     
-	printf("counter: %ld\n", counter);
-	
+    printf("counter: %ld\n", counter);
+    
     lthread_mutex_destroy(&mutex_lock_st);
-	
+    
     return 0;
 }
 
@@ -47,19 +47,18 @@ int main()
 void *doit(void *arg)
 {    
     uint64_t i, val;
-	uint64_t tmp = 0;
-	uint64_t tid = pthread_self();
-	
-	printf("tid:%x - %ld\n", (unsigned int)tid, (unsigned int)tid);
-	
+    uint64_t tid = pthread_self();
+    
+    printf("tid:%x - %ld\n", (unsigned int)tid, (unsigned int)tid);
+    
     for (i=0; i<NLOOP; i++) {
         //pthread_mutex_lock(&counter_mutex);
-		
-		lthread_mutex_lock(&mutex_lock_st);
+        
+        lthread_mutex_lock(&mutex_lock_st);
 
-		counter += 1;
+        counter += 1;
 
-		lthread_mutex_unlock(&mutex_lock_st);
+        lthread_mutex_unlock(&mutex_lock_st);
         //pthread_mutex_unlock(&counter_mutex);
     }
     return NULL;
