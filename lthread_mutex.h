@@ -7,6 +7,7 @@
 
 //#include <errno.h>
 #include <string.h>
+#include <sched.h>
 
 
 #ifdef __cplusplus
@@ -26,8 +27,8 @@ enum posix_error {
 
 
 struct lthread_mutex {
-    uint64_t owner;  /* 用pthread_self试下 */
-    //rte_atomic64_t    count; /* 加锁线程数量计数*/
+    volatile uint32_t owner;  /* 用pthread_self试下 */
+    //rte_atomic32_t    count; /* 加锁线程数量计数*/
     char name[MAX_MUTEX_NAME_SIZE];
 } __rte_cache_aligned;
 
@@ -74,7 +75,7 @@ static int lthread_mutex_destroy(struct lthread_mutex *m)
  */
 static int lthread_mutex_lock(struct lthread_mutex *m)
 {
-    uint64_t tid = pthread_self();
+    uint32_t tid = pthread_self();
 
     if (m == NULL) {
         return POSIX_ERRNO(EINVAL);
@@ -87,8 +88,8 @@ static int lthread_mutex_lock(struct lthread_mutex *m)
 
     for (;;) {
         do {
-            if (rte_atomic64_cmpset
-                ((uint64_t *) &m->owner, 0, tid)) {
+            if (rte_atomic32_cmpset
+                ((uint32_t *) &m->owner, 0, tid)) {
                 /* happy days, we got the lock */
                 return 0;
             }
@@ -107,7 +108,7 @@ static int lthread_mutex_lock(struct lthread_mutex *m)
 /* try to lock a mutex but don't block */
 static int lthread_mutex_trylock(struct lthread_mutex *m)
 {
-    uint64_t tid = pthread_self();
+    uint32_t tid = pthread_self();
 
     if (m == NULL) {
         return POSIX_ERRNO(EINVAL);
@@ -118,8 +119,8 @@ static int lthread_mutex_trylock(struct lthread_mutex *m)
         return POSIX_ERRNO(EDEADLK);
     }
 
-    if (rte_atomic64_cmpset
-        ((uint64_t *) &m->owner, (uint64_t) 0, tid)) {
+    if (rte_atomic32_cmpset
+        ((uint32_t *) &m->owner, (uint32_t) 0, tid)) {
         /* got the lock */
         return 0;
     }
@@ -132,7 +133,7 @@ static int lthread_mutex_trylock(struct lthread_mutex *m)
  */
 static int lthread_mutex_unlock(struct lthread_mutex *m)
 {
-    uint64_t tid = pthread_self();
+    uint32_t tid = pthread_self();
 
     if (m == NULL) {
         return POSIX_ERRNO(EINVAL);
